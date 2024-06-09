@@ -1,37 +1,23 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { fetchPosts } from "../services/api";
+import { incrementPage, loadPosts, setPageSize } from "../store/postsSlice";
+import { AppDispatch, RootState } from "../store/store";
 import { Post } from "../types";
 
 const PostsPage: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [page, setPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(20);
-  const [total, setTotal] = useState<number>(0);
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const loadPosts = useCallback(async () => {
-    if (loading) return;
-    setLoading(true);
-    if (pageSize === 20) {
-      setPageSize(10);
-    }
-    try {
-      const response = await fetchPosts(page, pageSize);
-      setPosts((prevPosts) => [...prevPosts, ...response.data]);
-      setTotal(parseInt(response.headers["x-total-count"], 10));
-      setPage((prevPage) => prevPage + 1);
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [loading, page, pageSize]);
+  const dispatch: AppDispatch = useDispatch();
+  const { posts, total, loading, pageSize } = useSelector(
+    (state: RootState) => state.posts
+  );
+  const { usersMap } = useSelector((state: RootState) => state.users);
 
   useEffect(() => {
-    loadPosts();
+    if (pageSize === 20) dispatch(setPageSize(10));
+    dispatch(loadPosts());
   }, []);
+
   useEffect(() => {
     const postElements = document.querySelectorAll(".post");
     if (postElements.length < 4) return;
@@ -41,7 +27,8 @@ const PostsPage: React.FC = () => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !loading && posts.length < total) {
-          loadPosts();
+          dispatch(incrementPage());
+          dispatch(loadPosts());
         }
       },
       {
@@ -60,24 +47,41 @@ const PostsPage: React.FC = () => {
         observer.unobserve(fourthLastPostElement);
       }
     };
-  }, [posts, loadPosts, loading, total]);
+  }, [posts, loading, total, dispatch]);
 
   return (
-    <div className="bg-gray-900 p-4 min-h-screen">
-      <h2 className="text-3xl font-bold text-white mb-6">Your Feed</h2>
-      <ul className="flex flex-col gap-4">
-        {posts.map((post) => (
+    <div className="min-h-screen w-full">
+      <h2 className="w-full flex justify-center items-center text-3xl font-bold text-white mb-6 mt-4">
+        Your Feed
+      </h2>
+      <ul className="flex flex-col items-center">
+        {posts.map((post: Post) => (
           <li
             key={`post-${post.id}-${post.userId}`}
-            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300"
+            className="post h-40 w-full flex flex-col justify-center items-center border-t-[1px] shadow-md p-12 hover:shadow-lg transition-shadow duration-300"
           >
-            <Link
-              to={`/posts/${post.id}/comments`}
-              className="text-xl font-semibold text-blue-400 hover:text-blue-300"
-            >
-              {post.title}
-            </Link>
-            <p className="text-gray-700 mt-2">{post.body}</p>
+            <div className="w-full flex items-center justify-center ml-[-450px]">
+              <span className="flex flex-row gap-2 items-center justify-center text-center">
+                <span className="rounded-full bg-neutral-500 w-10 h-10 flex-shrink-0 mb-[-30px]"></span>
+                <span className="text-lg font-bold">
+                  {usersMap[post.userId]?.name}
+                </span>
+                <span className="text-neutral-400 text-lg">
+                  @{usersMap[post.userId]?.username}
+                </span>
+              </span>
+            </div>
+            <div className="flex flex-col justify-center items-center w-full">
+              <Link
+                to={`/${post.id}/comments`}
+                className="max-w-[600px] text-xl font-semibold text-blue-400 hover:text-blue-300 first-letter:capitalize text-center"
+              >
+                {post.title}
+              </Link>
+              <p className="mt-2 max-w-[600px] text-wrap text-justify first-letter:capitalize">
+                {post.body}
+              </p>
+            </div>
           </li>
         ))}
       </ul>

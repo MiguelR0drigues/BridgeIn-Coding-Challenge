@@ -1,39 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { fetchComments } from "../services/api";
+import { loadComments, setLimit } from "../store/commentsSlice";
+import { AppDispatch, RootState } from "../store/store";
 import { Comment } from "../types";
 
 interface RouteParams extends Record<string, string | undefined> {
-  params: string | undefined;
+  postId: string | undefined;
 }
+
 const CommentsPage: React.FC = () => {
   const { postId } = useParams<RouteParams>();
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [page, setPage] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(20);
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const loadComments = useCallback(async () => {
-    if (loading || !postId) return;
-    setLoading(true);
-    if (limit === 20) {
-      setLimit(10);
-    }
-    try {
-      const response = await fetchComments(parseInt(postId), page, limit);
-      setComments((prevComments) => [...prevComments, ...response.data]);
-      setPage((prevPage) => prevPage + 1);
-    } catch (error) {
-      console.error("Error fetching comments:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [page]);
+  const dispatch: AppDispatch = useDispatch();
+  const { comments, loading, limit } = useSelector(
+    (state: RootState) => state.comments
+  );
 
   useEffect(() => {
-    loadComments();
-  }, []);
+    if (limit === 20) dispatch(setLimit(10));
+    if (postId) dispatch(loadComments(parseInt(postId)));
+  }, [postId]);
 
   // useEffect(() => {
   //   const handleScroll = () => {
@@ -55,7 +42,7 @@ const CommentsPage: React.FC = () => {
     <div>
       <h2>Comments for Post {postId}</h2>
       <ul>
-        {comments.map((comment) => (
+        {comments.map((comment: Comment) => (
           <li key={`comment-${comment.id}`}>
             <p>{comment.body}</p>
             <p>By: {comment.email}</p>
