@@ -16,7 +16,13 @@ const initialState: UsersState = {
 
 export const loadUsers = createAsyncThunk("users/loadUsers", async () => {
   const response = await fetchUsers();
-  return response.data;
+  const finalData = response.data.map((user: User) => ({
+    ...user,
+    color: `#${Math.floor(Math.random() * 16777215)
+      .toString(16)
+      .padStart(6, "0")}`,
+  }));
+  return finalData;
 });
 
 const usersSlice = createSlice({

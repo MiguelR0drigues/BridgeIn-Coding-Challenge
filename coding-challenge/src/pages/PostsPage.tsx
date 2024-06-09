@@ -62,7 +62,12 @@ const PostsPage: React.FC = () => {
           >
             <div className="w-full flex items-center justify-center ml-[-450px]">
               <span className="flex flex-row gap-2 items-center justify-center text-center">
-                <span className="rounded-full bg-neutral-500 w-10 h-10 flex-shrink-0 mb-[-30px]"></span>
+                <span
+                  className={`rounded-full w-10 h-10 flex-shrink-0 mb-[-30px] text-center flex items-center justify-center`}
+                  style={{ backgroundColor: usersMap[post.userId]?.color }}
+                >
+                  {usersMap[post.userId]?.name.split("")[0]}
+                </span>
                 <span className="text-lg font-bold">
                   {usersMap[post.userId]?.name}
                 </span>

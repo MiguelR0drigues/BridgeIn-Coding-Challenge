@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { AppDispatch, RootState } from "../store/store";
 import { loadUsers } from "../store/usersSlice";
+import { User } from "../types";
 
 const OtherUsers: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -19,7 +20,7 @@ const OtherUsers: React.FC = () => {
       aria-label="right-Sidebar"
     >
       <div className="flex flex-col gap-3 items-center justify-start w-full">
-        {users.map((user: any) => (
+        {users.map((user: User) => (
           <NavLink
             key={`otherUsers-${user.id}`}
             to={`/profile/${user.id}`}
@@ -28,7 +29,12 @@ const OtherUsers: React.FC = () => {
               "flex text-white mx-2 gap-4 text-left items-center text-sm rounded-full w-full p-3 hover:bg-gray-700 transition duration-300 ease-in-out cursor-pointer"
             }
           >
-            <span className="rounded-full bg-neutral-500 w-10 h-10 flex-shrink-0"></span>
+            <span
+              className="rounded-full bg-neutral-500 w-10 h-10 flex-shrink-0 flex text-center justify-center items-center"
+              style={{ backgroundColor: user.color }}
+            >
+              {user.name.split("")[0]}
+            </span>
             <span className="flex flex-col flex-grow">
               <span className="text-sm">{user.name}</span>
               <span className="text-neutral-400">@{user.username}</span>
