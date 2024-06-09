@@ -58,17 +58,18 @@ const PostsPage: React.FC = () => {
         {posts.map((post: Post) => (
           <li
             key={`post-${post.id}-${post.userId}`}
-            className="post h-40 w-full flex flex-col justify-center items-center border-t-[1px] shadow-md p-12 hover:shadow-lg transition-shadow duration-300"
+            className="post h-40 w-full flex flex-col justify-center items-center border-t-[1px] shadow-md p-12 cursor-pointer hover:bg-gray-700 hover:shadow-lg transition duration-300 ease-in-out"
           >
             <div className="w-full flex items-center justify-center ml-[-450px]">
               <span className="flex flex-row gap-2 items-center justify-center text-center">
-                <span
-                  className={`rounded-full w-10 h-10 flex-shrink-0 mb-[-30px] text-center flex items-center justify-center`}
+                <Link
+                  to={`/profile/${post.userId}`}
+                  className={`rounded-full w-10 h-10 flex-shrink-0 mb-[-30px] text-center flex items-center justify-center hover:brightness-75 duration-300 ease-in-out z-10`}
                   style={{ backgroundColor: usersMap[post.userId]?.color }}
                 >
                   {usersMap[post.userId]?.name.split("")[0]}
-                </span>
-                <span className="text-lg font-bold">
+                </Link>
+                <span className="text-lg font-bold hover:underline ">
                   {usersMap[post.userId]?.name}
                 </span>
                 <span className="text-neutral-400 text-lg">
@@ -79,7 +80,7 @@ const PostsPage: React.FC = () => {
             <div className="flex flex-col justify-center items-center w-full">
               <Link
                 to={`/${post.id}/comments`}
-                className="max-w-[600px] text-xl font-semibold text-blue-400 hover:text-blue-300 first-letter:capitalize text-center"
+                className="max-w-[600px] text-xl font-semibold text-blue-400 hover:text-blue-300 first-letter:capitalize text-center hover:underline "
               >
                 {post.title}
               </Link>
