@@ -23,4 +23,7 @@ export const fetchComments = (postId: number, page: number, limit: number) => {
   });
 };
 
+export const fetchUsers = () => {
+  return API.get("/users");
+};
 export default API;

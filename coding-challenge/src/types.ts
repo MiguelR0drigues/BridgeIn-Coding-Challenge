@@ -18,3 +18,10 @@ export interface Pagination {
   limit: number;
   total: number;
 }
+
+export interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+}
