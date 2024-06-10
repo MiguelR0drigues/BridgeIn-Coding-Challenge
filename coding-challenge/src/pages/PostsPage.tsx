@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   incrementPage,
   loadPosts,
@@ -18,13 +18,14 @@ const PostsPage: React.FC = () => {
     (state: RootState) => state.posts
   );
   const { usersMap } = useSelector((state: RootState) => state.users);
+  const params = useParams<{ userId: string }>();
 
   useEffect(() => {
     dispatch(resetPage());
     dispatch(resetPosts());
     dispatch(loadPosts(undefined));
     if (pageSize === 20) dispatch(setPageSize(10));
-  }, []);
+  }, [params]);
 
   useEffect(() => {
     const postElements = document.querySelectorAll(".post");

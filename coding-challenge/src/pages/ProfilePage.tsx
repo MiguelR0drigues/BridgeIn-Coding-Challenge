@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
+import { LeftArrowIcon } from "../assets/icons";
 import {
   incrementPage,
   loadPosts,
@@ -22,10 +23,11 @@ const ProfilePage: React.FC = () => {
   const currentUser = users.find((user) => user.id === Number(params.userId));
 
   useEffect(() => {
+    dispatch(setPageSize(20));
     dispatch(resetPage());
     dispatch(resetPosts());
     dispatch(loadPosts(Number(params.userId)));
-    if (pageSize === 20) dispatch(setPageSize(10));
+    dispatch(setPageSize(10));
   }, [params]);
 
   useEffect(() => {
@@ -63,9 +65,18 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full">
-      <header className="w-full flex flex-col gap-2 justify-center items-center">
-        <h2 className="text-3xl font-bold text-white">{currentUser?.name}</h2>
-        <h4 className="text-sm text-neutral-400">@{currentUser?.username}</h4>
+      <header className="w-full flex gap-2 justify-around items-center">
+        <Link
+          to={`/`}
+          className="rounded-full w-10 h-10 flex-shrink-0 text-center flex items-center justify-center hover:bg-gray-700 hover:shadow-lg transition duration-300 ease-in-out cursor-pointer"
+        >
+          <LeftArrowIcon />
+        </Link>
+        <span className="flex flex-col gap-2 justify-center items-center">
+          <h2 className="text-3xl font-bold text-white">{currentUser?.name}</h2>
+          <h4 className="text-sm text-neutral-400">@{currentUser?.username}</h4>
+        </span>
+        <span></span>
       </header>
       <ul className="flex flex-col items-center">
         {posts.map((post: Post) => (
