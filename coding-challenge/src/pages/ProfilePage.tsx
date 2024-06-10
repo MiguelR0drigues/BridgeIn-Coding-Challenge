@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import {
   incrementPage,
-  loadPostsForUser,
+  loadPosts,
   resetPage,
   resetPosts,
   setPageSize,
@@ -24,7 +24,7 @@ const ProfilePage: React.FC = () => {
   useEffect(() => {
     dispatch(resetPage());
     dispatch(resetPosts());
-    dispatch(loadPostsForUser(Number(params.userId)));
+    dispatch(loadPosts(Number(params.userId)));
     if (pageSize === 20) dispatch(setPageSize(10));
   }, [params]);
 
@@ -40,7 +40,7 @@ const ProfilePage: React.FC = () => {
           if (pageSize === 20) dispatch(setPageSize(10));
 
           dispatch(incrementPage());
-          dispatch(loadPostsForUser(Number(params.userId)));
+          dispatch(loadPosts(Number(params.userId)));
         }
       },
       {

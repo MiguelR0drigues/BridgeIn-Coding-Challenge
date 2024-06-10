@@ -21,19 +21,7 @@ const initialState: PostsState = {
 
 export const loadPosts = createAsyncThunk(
   "posts/loadPosts",
-  async (_, { getState }) => {
-    const { page, pageSize } = (getState() as RootState).posts;
-    const response = await fetchPosts(page, pageSize);
-    return {
-      posts: response.data,
-      total: parseInt(response.headers["x-total-count"], 10),
-    };
-  }
-);
-
-export const loadPostsForUser = createAsyncThunk(
-  "posts/loadPostsForUser",
-  async (userId: number, { getState }) => {
+  async (userId: number | undefined, { getState }) => {
     const { page, pageSize } = (getState() as RootState).posts;
     const response = await fetchPosts(page, pageSize, userId);
 
@@ -63,15 +51,15 @@ const postsSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(loadPostsForUser.pending, (state) => {
+    builder.addCase(loadPosts.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(loadPostsForUser.fulfilled, (state, action) => {
+    builder.addCase(loadPosts.fulfilled, (state, action) => {
       state.posts = [...state.posts, ...action.payload.posts];
       state.total = action.payload.total;
       state.loading = false;
     });
-    builder.addCase(loadPostsForUser.rejected, (state) => {
+    builder.addCase(loadPosts.rejected, (state) => {
       state.loading = false;
     });
   },

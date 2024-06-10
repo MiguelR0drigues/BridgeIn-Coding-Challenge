@@ -22,7 +22,7 @@ const PostsPage: React.FC = () => {
   useEffect(() => {
     dispatch(resetPage());
     dispatch(resetPosts());
-    dispatch(loadPosts());
+    dispatch(loadPosts(undefined));
     if (pageSize === 20) dispatch(setPageSize(10));
   }, []);
 
