@@ -1,9 +1,9 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import "../index.css";
-import CommentsPage from "../pages/CommentsPage";
-import PostsPage from "../pages/PostsPage";
-import ProfilePage from "../pages/ProfilePage";
+import "../../index.css";
+import CommentsPage from "../../pages/CommentsPage";
+import PostsPage from "../../pages/PostsPage";
+import ProfilePage from "../../pages/ProfilePage";
 const Callback: React.FC = () => <div>Callback Page</div>;
 
 const Main: React.FC = () => {

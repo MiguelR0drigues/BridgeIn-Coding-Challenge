@@ -1,8 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { HomeIcon, UserIcon } from "../assets/icons";
-import { myUserId } from "../constants";
-
+import { myUserId } from "../../constants";
+import { HomeIcon, UserIcon } from "../../theme/icons";
 const Navigation: React.FC = () => {
   return (
     <aside

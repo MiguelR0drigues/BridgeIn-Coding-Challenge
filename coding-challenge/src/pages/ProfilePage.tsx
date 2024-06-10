@@ -1,8 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
-import { LeftArrowIcon } from "../assets/icons";
+import { useParams } from "react-router-dom";
+import Header from "../components/header/Header";
+import Loader from "../components/loader/Loader";
+import PostCard from "../components/post-card/PostCard";
 import {
   incrementPage,
   loadPosts,
@@ -19,7 +21,7 @@ const ProfilePage: React.FC = () => {
   const { posts, total, loading, pageSize } = useSelector(
     (state: RootState) => state.posts
   );
-  const { users, usersMap } = useSelector((state: RootState) => state.users);
+  const { users } = useSelector((state: RootState) => state.users);
   const currentUser = users.find((user) => user.id === Number(params.userId));
 
   useEffect(() => {
@@ -65,61 +67,18 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full">
-      <header className="w-full flex gap-2 justify-around items-center">
-        <Link
-          to={`/`}
-          className="rounded-full w-10 h-10 flex-shrink-0 text-center flex items-center justify-center hover:bg-gray-700 hover:shadow-lg transition duration-300 ease-in-out cursor-pointer"
-        >
-          <LeftArrowIcon />
-        </Link>
-        <span className="flex flex-col gap-2 justify-center items-center">
+      <Header hasGoBack>
+        <span className="flex flex-col gap-1 justify-start items-start">
           <h2 className="text-3xl font-bold text-white">{currentUser?.name}</h2>
           <h4 className="text-sm text-neutral-400">@{currentUser?.username}</h4>
         </span>
-        <span></span>
-      </header>
+      </Header>
       <ul className="flex flex-col items-center">
         {posts.map((post: Post) => (
-          <Link
-            key={`post-${post.id}-${post.userId}`}
-            to={`/${post.id}/comments`}
-            className="post h-40 w-full flex flex-col justify-center items-center border-t-[1px] shadow-md p-12 cursor-pointer hover:bg-gray-700 hover:shadow-lg transition duration-300 ease-in-out"
-          >
-            <div className="w-full flex items-center justify-center ml-[-450px]">
-              <span className="flex flex-row gap-2 items-end justify-center text-center">
-                <Link
-                  to={`/profile/${post.userId}`}
-                  className={`rounded-full w-10 h-10 flex-shrink-0 mb-[-30px] text-center flex items-center justify-center hover:brightness-75 duration-300 ease-in-out z-10`}
-                  style={{ backgroundColor: usersMap[post.userId]?.color }}
-                >
-                  {usersMap[post.userId]?.name.split("")[0]}
-                </Link>
-                <Link
-                  to={`/profile/${post.userId}`}
-                  className="text-lg font-bold hover:underline "
-                >
-                  {usersMap[post.userId]?.name}
-                </Link>
-                <span className="text-neutral-400 text-[16px]">
-                  @{usersMap[post.userId]?.username}
-                </span>
-              </span>
-            </div>
-            <div className="flex flex-col justify-center items-center w-full">
-              <Link
-                to={`/${post.id}/comments`}
-                className="max-w-[600px] text-xl font-semibold text-blue-400 hover:text-blue-300 first-letter:capitalize text-center hover:underline "
-              >
-                {post.title}
-              </Link>
-              <p className="mt-2 max-w-[600px] text-wrap text-justify first-letter:capitalize">
-                {post.body}
-              </p>
-            </div>
-          </Link>
+          <PostCard post={post} />
         ))}
       </ul>
-      {loading && <p className="text-white mt-4">Loading...</p>}
+      {loading && <Loader />}
     </div>
   );
 };

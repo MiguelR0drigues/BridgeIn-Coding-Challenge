@@ -1,7 +1,7 @@
 import React from "react";
-import Main from "./components/Main";
-import Navigation from "./components/Navigation";
 import OtherUsers from "./components/Users";
+import Main from "./components/main/Main";
+import Navigation from "./components/navigation/Navigation";
 import "./index.css";
 
 const App: React.FC = () => {
