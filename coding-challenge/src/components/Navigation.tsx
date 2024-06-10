@@ -1,11 +1,12 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { HomeIcon, UserIcon } from "../assets/icons";
+import { myUserId } from "../constants";
 
 const Navigation: React.FC = () => {
   return (
     <aside
-      className="fixed top-0 left-0 w-[28rem] h-full p-12 flex flex-col gap-3 items-center justify-center border-r-[1px] border-neutral-500 bg-gray-800"
+      className="w-full h-full p-12 flex flex-col gap-3 items-center justify-center border-r-[1px] border-neutral-500 bg-gray-800"
       aria-label="Sidebar"
     >
       <nav className="flex flex-col gap-3 items-center justify-start">
@@ -22,7 +23,7 @@ const Navigation: React.FC = () => {
           Posts
         </NavLink>
         <NavLink
-          to="/profile"
+          to={`/profile/${myUserId}`}
           end
           className={({ isActive }) =>
             `flex text-white mx-2 gap-4 text-left items-center text-xl rounded-full w-36 p-3 pl-4 hover:bg-gray-700 transition duration-300 ease-in-out ${

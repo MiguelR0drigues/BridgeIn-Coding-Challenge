@@ -11,9 +11,24 @@ html {
   height: 100dvh;
   background-color: rgb(31 41 55);
   color: #fff;
+  scrollbar-width: thin;
+  scrollbar-color: darkgrey transparent;
 }
 
 .App {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.Navigation,
+.Main,
+.OtherUsers {
   height: 100%;
+  overflow-y: auto;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
