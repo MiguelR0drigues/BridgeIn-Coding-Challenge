@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Card from "../components/card/Card";
+import EmptyState from "../components/empty-state/EmptyState";
 import Header from "../components/header/Header";
 import Loader from "../components/loader/Loader";
 import {
@@ -82,9 +83,9 @@ const PostsPage: React.FC = () => {
         </h2>
       </Header>
       <ul className="flex flex-col items-center">
-        {posts.map((post: Post) => (
-          <Card key={post.id} post={post} />
-        ))}
+        {posts.length > 0
+          ? posts.map((post: Post) => <Card key={post.id} post={post} />)
+          : !loading && <EmptyState />}
       </ul>
       {loading && <Loader />}
     </div>

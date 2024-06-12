@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Card from "../components/card/Card";
+import EmptyState from "../components/empty-state/EmptyState";
 import Header from "../components/header/Header";
 import Loader from "../components/loader/Loader";
 import {
@@ -71,6 +72,10 @@ const ProfilePage: React.FC = () => {
     }
   }, []);
 
+  const userPosts = posts.filter(
+    (post) => post.userId === Number(params.userId)
+  );
+
   return (
     <div className="min-h-screen w-full">
       <Header hasGoBack>
@@ -80,11 +85,9 @@ const ProfilePage: React.FC = () => {
         </span>
       </Header>
       <ul className="flex flex-col items-center">
-        {posts
-          .filter((post) => post.userId === Number(params.userId))
-          .map((post: Post) => (
-            <Card key={post.id} post={post} />
-          ))}
+        {userPosts.length > 0
+          ? userPosts.map((post: Post) => <Card key={post.id} post={post} />)
+          : !loading && <EmptyState />}
       </ul>
       {loading && <Loader />}
     </div>
