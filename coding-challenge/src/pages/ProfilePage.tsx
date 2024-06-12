@@ -2,49 +2,45 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import Card from "../components/card/Card";
 import Header from "../components/header/Header";
 import Loader from "../components/loader/Loader";
-import PostCard from "../components/post-card/PostCard";
 import {
   incrementPage,
   loadPosts,
+  mergeCachedPosts,
   resetPage,
   resetPosts,
   setPageSize,
 } from "../store/postsSlice";
-import { AppDispatch, RootState } from "../store/store";
+import { RootState } from "../store/store";
 import { Post } from "../types";
 
 const ProfilePage: React.FC = () => {
   const params = useParams<{ userId: string }>();
-  const dispatch: AppDispatch = useDispatch();
-  const { posts, total, loading, pageSize } = useSelector(
+  const dispatch = useDispatch();
+  const { posts, total, loading, pageSize, cachedPosts } = useSelector(
     (state: RootState) => state.posts
   );
   const { users } = useSelector((state: RootState) => state.users);
   const currentUser = users.find((user) => user.id === Number(params.userId));
 
   useEffect(() => {
-    dispatch(setPageSize(20));
     dispatch(resetPage());
     dispatch(resetPosts());
+    //@ts-expect-error: UnknownAction error
     dispatch(loadPosts(Number(params.userId)));
-    dispatch(setPageSize(10));
+    if (pageSize === 20) dispatch(setPageSize(10));
   }, [params]);
 
   useEffect(() => {
-    const postElements = document.querySelectorAll(".post");
-    if (postElements.length < 4) return;
-
-    const fourthLastPostElement = postElements[postElements.length - 4];
-
+    // IntersectionObserver setup
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !loading && posts.length < total) {
           if (pageSize === 20) dispatch(setPageSize(10));
 
           dispatch(incrementPage());
-          dispatch(loadPosts(Number(params.userId)));
         }
       },
       {
@@ -54,6 +50,10 @@ const ProfilePage: React.FC = () => {
       }
     );
 
+    const postElements = document.querySelectorAll(".post");
+    if (postElements.length < 4) return;
+
+    const fourthLastPostElement = postElements[postElements.length - 4];
     if (fourthLastPostElement) {
       observer.observe(fourthLastPostElement);
     }
@@ -63,7 +63,13 @@ const ProfilePage: React.FC = () => {
         observer.unobserve(fourthLastPostElement);
       }
     };
-  }, [posts, loading, total, dispatch]);
+  }, [posts, loading, total, pageSize, dispatch]);
+
+  useEffect(() => {
+    if (posts.length > 0 && cachedPosts.length > 0) {
+      dispatch(mergeCachedPosts());
+    }
+  }, []);
 
   return (
     <div className="min-h-screen w-full">
@@ -74,9 +80,11 @@ const ProfilePage: React.FC = () => {
         </span>
       </Header>
       <ul className="flex flex-col items-center">
-        {posts.map((post: Post) => (
-          <PostCard post={post} />
-        ))}
+        {posts
+          .filter((post) => post.userId === Number(params.userId))
+          .map((post: Post) => (
+            <Card key={post.id} post={post} />
+          ))}
       </ul>
       {loading && <Loader />}
     </div>

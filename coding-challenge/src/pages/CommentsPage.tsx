@@ -2,6 +2,9 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import Card from "../components/card/Card";
+import Header from "../components/header/Header";
+import Loader from "../components/loader/Loader";
 import { loadComments, setLimit } from "../store/commentsSlice";
 import { AppDispatch, RootState } from "../store/store";
 import { Comment } from "../types";
@@ -22,34 +25,21 @@ const CommentsPage: React.FC = () => {
     if (postId) dispatch(loadComments(parseInt(postId)));
   }, [postId]);
 
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     if (
-  //       window.innerHeight + document.documentElement.scrollTop !==
-  //         document.documentElement.offsetHeight ||
-  //       loading
-  //     ) {
-  //       return;
-  //     }
-  //     loadComments();
-  //   };
-
-  //   window.addEventListener("scroll", handleScroll);
-  //   return () => window.removeEventListener("scroll", handleScroll);
-  // }, [loadComments, loading]);
-
   return (
-    <div>
-      <h2>Comments for Post {postId}</h2>
-      <ul>
+    <div className="min-h-screen w-full posts-page">
+      <Header>
+        <span className="flex flex-col gap-1 justify-start items-start">
+          <h2 className="text-3xl font-bold text-white">
+            Comments for {postId}
+          </h2>
+        </span>
+      </Header>
+      <ul className="flex flex-col items-center">
         {comments.map((comment: Comment) => (
-          <li key={`comment-${comment.id}`}>
-            <p>{comment.body}</p>
-            <p>By: {comment.email}</p>
-          </li>
+          <Card key={comment.id} comment={comment} />
         ))}
       </ul>
-      {loading && <p>Loading...</p>}
+      {loading && <Loader />}
     </div>
   );
 };

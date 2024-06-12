@@ -1,23 +1,25 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+// PostsPage.tsx
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import Card from "../components/card/Card";
 import Header from "../components/header/Header";
 import Loader from "../components/loader/Loader";
-import PostCard from "../components/post-card/PostCard";
 import {
   incrementPage,
   loadPosts,
+  mergeCachedPosts,
   resetPage,
   resetPosts,
   setPageSize,
 } from "../store/postsSlice";
-import { AppDispatch, RootState } from "../store/store";
+import { RootState } from "../store/store";
 import { Post } from "../types";
 
 const PostsPage: React.FC = () => {
-  const dispatch: AppDispatch = useDispatch();
-  const { posts, total, loading, pageSize } = useSelector(
+  const dispatch = useDispatch();
+  const { posts, cachedPosts, total, loading, pageSize, page } = useSelector(
     (state: RootState) => state.posts
   );
   const params = useParams<{ userId: string }>();
@@ -25,29 +27,28 @@ const PostsPage: React.FC = () => {
   useEffect(() => {
     dispatch(resetPage());
     dispatch(resetPosts());
+    //@ts-expect-error: UnknownAction error
     dispatch(loadPosts(undefined));
     if (pageSize === 20) dispatch(setPageSize(10));
   }, [params]);
 
   useEffect(() => {
-    const postElements = document.querySelectorAll(".post");
-    if (postElements.length < 4) return;
-
-    const fourthLastPostElement = postElements[postElements.length - 4];
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !loading && posts.length < total) {
-          dispatch(incrementPage());
-          dispatch(loadPosts());
-        }
-      },
-      {
-        root: null,
-        rootMargin: "0px",
-        threshold: 0.1,
+    const handleObserver = (entries: IntersectionObserverEntry[]) => {
+      const target = entries[0];
+      if (target.isIntersecting && !loading && posts.length < total) {
+        dispatch(incrementPage());
       }
-    );
+    };
+
+    const options = {
+      root: null,
+      rootMargin: "0px",
+      threshold: 0.1,
+    };
+
+    const observer = new IntersectionObserver(handleObserver, options);
+    const postElements = document.querySelectorAll(".post");
+    const fourthLastPostElement = postElements[postElements.length - 4];
 
     if (fourthLastPostElement) {
       observer.observe(fourthLastPostElement);
@@ -60,6 +61,19 @@ const PostsPage: React.FC = () => {
     };
   }, [posts, loading, total, dispatch]);
 
+  useEffect(() => {
+    if (cachedPosts.length > 0) {
+      dispatch(mergeCachedPosts());
+    }
+  }, []);
+
+  useEffect(() => {
+    if (page > 1) {
+      //@ts-expect-error: UnknownAction error
+      dispatch(loadPosts(undefined));
+    }
+  }, [page]);
+
   return (
     <div className="min-h-screen w-full posts-page">
       <Header>
@@ -69,7 +83,7 @@ const PostsPage: React.FC = () => {
       </Header>
       <ul className="flex flex-col items-center">
         {posts.map((post: Post) => (
-          <PostCard post={post} />
+          <Card key={post.id} post={post} />
         ))}
       </ul>
       {loading && <Loader />}

@@ -1,10 +1,11 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { fetchPosts } from "../services/api";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { fetchPosts as apiFetchPosts } from "../services/api";
 import { Post } from "../types";
 import { RootState } from "./store";
 
 interface PostsState {
   posts: Post[];
+  cachedPosts: Post[];
   total: number;
   loading: boolean;
   page: number;
@@ -13,6 +14,7 @@ interface PostsState {
 
 const initialState: PostsState = {
   posts: [],
+  cachedPosts: [],
   total: 0,
   loading: false,
   page: 1,
@@ -22,11 +24,17 @@ const initialState: PostsState = {
 export const loadPosts = createAsyncThunk(
   "posts/loadPosts",
   async (userId: number | undefined, { getState }) => {
-    const { page, pageSize } = (getState() as RootState).posts;
-    const response = await fetchPosts(page, pageSize, userId);
+    const { page, pageSize, cachedPosts, posts } = (getState() as RootState)
+      .posts;
+    const response = await apiFetchPosts(page, pageSize, userId);
+
+    let mergedPosts = response.data;
+    if (cachedPosts.length > 0 && page === 1) {
+      mergedPosts = [...cachedPosts, ...response.data];
+    }
 
     return {
-      posts: response.data,
+      posts: [...posts, ...mergedPosts],
       total: parseInt(response.headers["x-total-count"], 10),
     };
   }
@@ -36,7 +44,7 @@ const postsSlice = createSlice({
   name: "posts",
   initialState,
   reducers: {
-    setPageSize: (state, action) => {
+    setPageSize: (state, action: PayloadAction<number>) => {
       state.pageSize = action.payload;
     },
     incrementPage: (state) => {
@@ -49,13 +57,31 @@ const postsSlice = createSlice({
       state.posts = [];
       state.total = 0;
     },
+    addPost: (state, action: PayloadAction<Post>) => {
+      state.cachedPosts.unshift(action.payload);
+      state.posts.unshift(action.payload);
+      state.total += 1;
+    },
+    addCachedPost: (state, action: PayloadAction<Post>) => {
+      state.cachedPosts.unshift(action.payload);
+    },
+    mergeCachedPosts: (state) => {
+      const uniquePosts = new Set([...state.cachedPosts, ...state.posts]);
+      state.posts = Array.from(uniquePosts);
+      state.total += state.cachedPosts.length;
+    },
+    removePost: (state, action: PayloadAction<number>) => {
+      const postIdToDelete = action.payload;
+      state.posts = state.posts.filter((post) => post.id !== postIdToDelete);
+      state.total -= 1;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(loadPosts.pending, (state) => {
       state.loading = true;
     });
     builder.addCase(loadPosts.fulfilled, (state, action) => {
-      state.posts = [...state.posts, ...action.payload.posts];
+      state.posts = action.payload.posts;
       state.total = action.payload.total;
       state.loading = false;
     });
@@ -65,6 +91,13 @@ const postsSlice = createSlice({
   },
 });
 
-export const { setPageSize, incrementPage, resetPage, resetPosts } =
-  postsSlice.actions;
+export const {
+  setPageSize,
+  incrementPage,
+  resetPage,
+  resetPosts,
+  addPost,
+  addCachedPost,
+  mergeCachedPosts,
+} = postsSlice.actions;
 export default postsSlice.reducer;
