@@ -99,5 +99,6 @@ export const {
   addPost,
   addCachedPost,
   mergeCachedPosts,
+  removePost,
 } = postsSlice.actions;
 export default postsSlice.reducer;

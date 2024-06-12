@@ -1,6 +1,7 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { myUserId } from "../../constants";
+import { removePost } from "../../store/postsSlice";
 import { RootState } from "../../store/store";
 import { CommentIcon, TrashIcon } from "../../theme/icons";
 import { Comment, Post } from "../../types";
@@ -8,9 +9,20 @@ import { Comment, Post } from "../../types";
 const Card = ({ post, comment }: { post?: Post; comment?: Comment }) => {
   const { usersMap } = useSelector((state: RootState) => state.users);
   const params = useParams<{ userId: string }>();
+  const dispatch = useDispatch();
 
   function renderPost() {
     if (!post) return;
+
+    const handleDelete = (
+      e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+      id: number
+    ) => {
+      e.stopPropagation();
+      e.preventDefault();
+      dispatch(removePost(id));
+    };
+
     return (
       <Link
         key={`comment${post.id}-${post.userId}`}
@@ -23,12 +35,14 @@ const Card = ({ post, comment }: { post?: Post; comment?: Comment }) => {
               to={`/profile/${post.userId}`}
               className={`rounded-full w-10 h-10 flex-shrink-0 mb-[-30px] text-center flex items-center justify-center hover:brightness-75 duration-300 ease-in-out z-10`}
               style={{ backgroundColor: usersMap[post.userId]?.color }}
+              onClick={(e) => e.stopPropagation()}
             >
               {usersMap[post.userId]?.name.split("")[0]}
             </Link>
             <Link
               to={`/profile/${post.userId}`}
               className="text-lg font-bold hover:underline "
+              onClick={(e) => e.stopPropagation()}
             >
               {usersMap[post.userId]?.name}
             </Link>
@@ -53,7 +67,10 @@ const Card = ({ post, comment }: { post?: Post; comment?: Comment }) => {
               Comments
             </span>
             {post.userId === myUserId && (
-              <button className="flex items-center justify-center gap-2 p-2 px-4 hover:bg-gray-500 duration-300 ease-in-out rounded-full mt-4">
+              <button
+                onClick={(e) => handleDelete(e, post.id)}
+                className="flex items-center justify-center gap-2 p-2 px-4 hover:bg-gray-500 duration-300 ease-in-out rounded-full mt-4 z-30"
+              >
                 <TrashIcon />
                 Delete
               </button>
