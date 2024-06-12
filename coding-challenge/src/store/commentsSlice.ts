@@ -40,6 +40,12 @@ const commentsSlice = createSlice({
     setLimit(state, action) {
       state.limit = action.payload;
     },
+    resetCommentPage(state) {
+      state.page = 1;
+    },
+    resetComments(state) {
+      state.comments = [];
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(loadComments.pending, (state) => {
@@ -55,5 +61,11 @@ const commentsSlice = createSlice({
   },
 });
 
-export const { incrementPage, setLoading, setLimit } = commentsSlice.actions;
+export const {
+  incrementPage,
+  setLoading,
+  setLimit,
+  resetCommentPage,
+  resetComments,
+} = commentsSlice.actions;
 export default commentsSlice.reducer;
