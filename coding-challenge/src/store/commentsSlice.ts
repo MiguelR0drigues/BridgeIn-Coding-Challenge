@@ -22,7 +22,7 @@ export const loadComments = createAsyncThunk(
     const state = getState() as { comments: CommentsState };
     const { page, limit } = state.comments;
     const response = await fetchComments(postId, page, limit);
-    dispatch(incrementPage());
+    dispatch(incrementCommentPage());
     return response.data;
   }
 );
@@ -31,13 +31,13 @@ const commentsSlice = createSlice({
   name: "comments",
   initialState,
   reducers: {
-    incrementPage(state) {
+    incrementCommentPage(state) {
       state.page += 1;
     },
-    setLoading(state, action) {
+    setCommentLoading(state, action) {
       state.loading = action.payload;
     },
-    setLimit(state, action) {
+    setCommentLimit(state, action) {
       state.limit = action.payload;
     },
     resetCommentPage(state) {
@@ -62,9 +62,9 @@ const commentsSlice = createSlice({
 });
 
 export const {
-  incrementPage,
-  setLoading,
-  setLimit,
+  incrementCommentPage,
+  setCommentLoading,
+  setCommentLimit,
   resetCommentPage,
   resetComments,
 } = commentsSlice.actions;

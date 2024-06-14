@@ -28,13 +28,22 @@ export const loadPosts = createAsyncThunk(
       .posts;
     const response = await apiFetchPosts(page, pageSize, userId);
 
-    let mergedPosts = response.data;
-    if (cachedPosts.length > 0 && page === 1) {
-      mergedPosts = [...cachedPosts, ...response.data];
-    }
+    // Filter out response posts that have the same id as any cached post
+    const filteredResponsePosts = response.data.filter(
+      (responsePost: Post) =>
+        !cachedPosts.some((cachedPost) => cachedPost.id === responsePost.id)
+    );
+
+    // Merge cachedPosts and filteredResponsePosts
+    const mergedPosts = [...cachedPosts, ...filteredResponsePosts];
+
+    // Merge with existing posts
+    const existingPostsMap = new Map(posts.map((post) => [post.id, post]));
+    mergedPosts.forEach((post) => existingPostsMap.set(post.id, post));
+    const finalPosts = Array.from(existingPostsMap.values());
 
     return {
-      posts: [...posts, ...mergedPosts],
+      posts: finalPosts,
       total: parseInt(response.headers["x-total-count"], 10),
     };
   }
@@ -67,13 +76,32 @@ const postsSlice = createSlice({
     },
     mergeCachedPosts: (state) => {
       const uniquePosts = new Set([...state.cachedPosts, ...state.posts]);
+      console.log(state.cachedPosts);
       state.posts = Array.from(uniquePosts);
       state.total += state.cachedPosts.length;
     },
     removePost: (state, action: PayloadAction<number>) => {
       const postIdToDelete = action.payload;
       state.posts = state.posts.filter((post) => post.id !== postIdToDelete);
+      state.cachedPosts = state.cachedPosts.filter(
+        (post) => post.id !== postIdToDelete
+      );
       state.total -= 1;
+    },
+    editPost: (state, action: PayloadAction<Post>) => {
+      const postId = action.payload.id;
+      const postIndex = state.posts.findIndex((post) => post.id === postId);
+      const cachedPostIndex = state.cachedPosts.findIndex(
+        (post) => post.id === postId
+      );
+      if (postIndex !== -1) {
+        state.posts[postIndex] = action.payload;
+      }
+      if (cachedPostIndex !== -1) {
+        state.cachedPosts[cachedPostIndex] = action.payload;
+      } else {
+        state.cachedPosts.unshift(action.payload);
+      }
     },
   },
   extraReducers: (builder) => {
@@ -100,5 +128,6 @@ export const {
   addCachedPost,
   mergeCachedPosts,
   removePost,
+  editPost,
 } = postsSlice.actions;
 export default postsSlice.reducer;

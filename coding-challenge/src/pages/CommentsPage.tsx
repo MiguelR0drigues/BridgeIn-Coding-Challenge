@@ -10,7 +10,7 @@ import {
   loadComments,
   resetCommentPage,
   resetComments,
-  setLimit,
+  setCommentLimit,
 } from "../store/commentsSlice";
 import { AppDispatch, RootState } from "../store/store";
 import { Comment } from "../types";
@@ -29,7 +29,7 @@ const CommentsPage: React.FC = () => {
   useEffect(() => {
     dispatch(resetCommentPage());
     dispatch(resetComments());
-    if (limit === 20) dispatch(setLimit(10));
+    if (limit === 20) dispatch(setCommentLimit(10));
     if (postId) dispatch(loadComments(parseInt(postId)));
   }, [postId]);
 
