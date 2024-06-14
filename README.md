@@ -2,6 +2,24 @@
 
 This project was built for BridgeIn as a coding challenge following the interview process for a Frontend developer position.
 
+# Table of Contents
+
+1. [Problem](#problem)
+2. [Solution](#solution)
+   1. [HomePage](#homepage)
+   2. [Profile Page](#profile-page)
+   3. [Comments Page](#comments-page)
+   4. [Create Post](#create-post)
+   5. [Edit Post](#edit-post)
+   6. [Delete Post](#delete-post)
+   7. [Create Comment](#create-comment)
+   8. [Edit Comment](#edit-comment)
+   9. [Delete Comment](#delete-comment)
+3. [Built With](#built-with)
+4. [Structure](#structure)
+5. [Skipped due to time constraints](#skipped-due-to-time-constraints)
+6. [Improvements for the future](#improvements-for-the-future)
+
 # Problem
 
 1. Consider the following public API to get the data you will need to display:
@@ -20,14 +38,40 @@ This project was built for BridgeIn as a coding challenge following the intervie
 
 # Solution
 
+## HomePage
+
 ![Home Page](./videos/homePage.gif)
+
+## Profile Page
+
 ![Profile Page](./videos/profilePage.gif)
+
+## Comments Page
+
 ![Comments Page](./videos/commentPage.gif)
+
+## Create Post
+
 ![Create Post](./videos/createPost.gif)
+
+## Edit Post
+
 ![Edit Post](./videos/editPost.gif)
+
+## Delete Post
+
 ![Delete Post](./videos/deletePost.gif)
+
+## Create Comment
+
 ![Create Comment](./videos/createComment.gif)
+
+## Edit Comment
+
 ![Edit Comment](./videos/editComment.gif)
+
+## Delete Comment
+
 ![Delete Comment](./videos/deleteComment.gif)
 
 # Built With
