@@ -20,17 +20,15 @@ This project was built for BridgeIn as a coding challenge following the intervie
 
 # Solution
 
-## Home Page (root)
-
-![Home Page](./videos/homePage.webm)
-![Profile Page](./videos/profilePage.webm)
-![Comments Page](./videos/commentPage.webm)
-![Create Post](./videos/createPost.webm)
-![Edit Post](./videos/editPost.webm)
-![Delete Post](./videos/deletePost.webm)
-![Create Comment](./videos/createComment.webm)
-![Edit Comment](./videos/editComment.webm)
-![Delete Comment](./videos/deleteComment.webm)
+![Home Page](./videos/homePage.gif)
+![Profile Page](./videos/profilePage.gif)
+![Comments Page](./videos/commentPage.gif)
+![Create Post](./videos/createPost.gif)
+![Edit Post](./videos/editPost.gif)
+![Delete Post](./videos/deletePost.gif)
+![Create Comment](./videos/createComment.gif)
+![Edit Comment](./videos/editComment.gif)
+![Delete Comment](./videos/deleteComment.gif)
 
 # Built With
 
