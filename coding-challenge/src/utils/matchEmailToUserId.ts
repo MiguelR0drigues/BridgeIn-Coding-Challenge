@@ -6,5 +6,5 @@ export const MatchEmailToUserId = (email: string): string | number | null => {
 
   const userWithMatchingEmail = users.find((user) => user.email === email);
 
-  return userWithMatchingEmail ? userWithMatchingEmail.id : email.toString();
+  return userWithMatchingEmail ? userWithMatchingEmail.name : email.toString();
 };

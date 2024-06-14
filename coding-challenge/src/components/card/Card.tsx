@@ -1,16 +1,17 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
-import { myUserId } from "../../constants";
+import { Link } from "react-router-dom";
+import { myEmail, myUserId } from "../../constants";
+import { editComment, removeComment } from "../../store/commentsSlice";
 import { editPost, removePost } from "../../store/postsSlice";
 import { RootState } from "../../store/store";
 import { CommentIcon, EditIcon, TrashIcon } from "../../theme/icons";
 import { Comment, Post } from "../../types";
 import { MatchEmailToUserId } from "../../utils/matchEmailToUserId";
+import CommentDialog from "../comment-dialog/CommentDialog";
 import PostDialog, { FormData } from "../post-dialog/PostDialog";
 
 const Card = ({ post, comment }: { post?: Post; comment?: Comment }) => {
   const { usersMap } = useSelector((state: RootState) => state.users);
-  const params = useParams<{ userId: string }>();
   const dispatch = useDispatch();
 
   function renderPost() {
@@ -81,13 +82,6 @@ const Card = ({ post, comment }: { post?: Post; comment?: Comment }) => {
             </button>
             {post.userId === myUserId && (
               <>
-                <button
-                  onClick={(e) => handleDelete(e, post.id)}
-                  className="flex items-center justify-center gap-2 p-2 px-4 hover:bg-gray-500 duration-300 ease-in-out rounded-full mt-4 z-30"
-                >
-                  <TrashIcon />
-                  Delete
-                </button>
                 <PostDialog
                   triggerClasses="flex items-center justify-center gap-2 p-2 px-4 hover:bg-gray-500 duration-300 ease-in-out rounded-full mt-4 z-30"
                   triggerLabel="Edit"
@@ -96,6 +90,13 @@ const Card = ({ post, comment }: { post?: Post; comment?: Comment }) => {
                   post={post}
                   onSubmit={handleEdit}
                 />
+                <button
+                  onClick={(e) => handleDelete(e, post.id)}
+                  className="flex items-center justify-center gap-2 p-2 px-4 hover:bg-gray-500 duration-300 ease-in-out rounded-full mt-4 z-30"
+                >
+                  <TrashIcon />
+                  Delete
+                </button>
               </>
             )}
           </p>
@@ -106,6 +107,27 @@ const Card = ({ post, comment }: { post?: Post; comment?: Comment }) => {
 
   function renderComment() {
     if (!comment) return;
+
+    const handleDelete = (
+      e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+      id: number
+    ) => {
+      e.stopPropagation();
+      e.preventDefault();
+      dispatch(removeComment(id));
+    };
+
+    const handleEdit = (formData: { name: string; body?: string }) => {
+      const newComment: Comment = {
+        id: comment.id,
+        name: formData.name,
+        body: formData.body || "",
+        email: comment.email,
+        postId: comment.postId,
+      };
+      dispatch(editComment(newComment));
+    };
+
     return (
       <div
         key={`comment${comment.id}-${comment.postId}`}
@@ -125,11 +147,25 @@ const Card = ({ post, comment }: { post?: Post; comment?: Comment }) => {
           <p className="mt-2 max-w-[600px] text-wrap text-justify first-letter:capitalize">
             {comment.body}
           </p>
-          {params.userId === MatchEmailToUserId(comment.email) && (
-            <button className="flex items-center justify-center gap-2 p-2 px-4 hover:bg-gray-500 duration-300 ease-in-out rounded-full mt-4">
-              <TrashIcon />
-              Delete
-            </button>
+          {myEmail === comment.email && (
+            <p className="flex gap-4">
+              <CommentDialog
+                triggerClasses="flex items-center justify-center gap-2 p-2 px-4 hover:bg-gray-500 duration-300 ease-in-out rounded-full mt-4 z-30"
+                title={`Edit Comment ${comment.id}`}
+                comment={comment}
+                onSubmit={handleEdit}
+              >
+                <EditIcon />
+                Edit
+              </CommentDialog>
+              <button
+                className="flex items-center justify-center gap-2 p-2 px-4 hover:bg-gray-500 duration-300 ease-in-out rounded-full mt-4"
+                onClick={(e) => handleDelete(e, comment.id)}
+              >
+                <TrashIcon />
+                Delete
+              </button>
+            </p>
           )}
         </div>
       </div>

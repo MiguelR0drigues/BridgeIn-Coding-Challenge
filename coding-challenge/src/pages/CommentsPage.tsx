@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import AddCommentCard from "../components/add-comment-card/AddCommentCard";
 import Card from "../components/card/Card";
 import EmptyState from "../components/empty-state/EmptyState";
 import Header from "../components/header/Header";
@@ -43,6 +44,7 @@ const CommentsPage: React.FC = () => {
         </span>
       </Header>
       <ul className="flex flex-col items-center">
+        <AddCommentCard />
         {comments.length > 0
           ? comments.map((comment: Comment) => (
               <Card key={comment.id} comment={comment} />

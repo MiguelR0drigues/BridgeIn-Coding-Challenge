@@ -1,14 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
+import { myEmail } from "../../constants";
 import { CloseIcon } from "../../theme/icons";
 import { Comment } from "../../types";
 
 export interface Props {
   comment?: Comment;
   triggerClasses?: string;
-  triggerIcon?: JSX.Element;
-  triggerLabel: string;
   title: string;
   onSubmit: (data: Comment) => void;
+  children: ReactNode;
 }
 
 export type FormData = {
@@ -20,9 +20,8 @@ const CommentDialog = ({
   title,
   comment,
   triggerClasses,
-  triggerLabel,
   onSubmit,
-  triggerIcon,
+  children,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState<FormData>({
@@ -68,10 +67,10 @@ const CommentDialog = ({
   const handleSubmit = () => {
     onSubmit({
       id: Date.now(),
-      email: comment?.email || "",
+      email: comment?.email || myEmail,
       body: formData.body || "",
       postId: comment?.postId || 0,
-      name: comment?.name || "",
+      name: formData?.name || "",
     });
     setFormData({ name: "", body: "" });
     closeDialog();
@@ -80,8 +79,7 @@ const CommentDialog = ({
   return (
     <>
       <button onClick={openDialog} className={triggerClasses}>
-        {triggerIcon}
-        {triggerLabel}
+        {children}
       </button>
       {isOpen && (
         <dialog
@@ -110,7 +108,7 @@ const CommentDialog = ({
           <fieldset className="flex flex-col p-4 rounded-b-md space-y-4 gap-2">
             <section className="relative">
               <input
-                name="title"
+                name="name"
                 type="text"
                 placeholder="Insert a title"
                 value={formData?.name}
