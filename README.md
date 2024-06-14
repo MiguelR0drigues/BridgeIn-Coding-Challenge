@@ -22,15 +22,15 @@ This project was built for BridgeIn as a coding challenge following the intervie
 
 ## Home Page (root)
 
-![Home Page](/public/videos/homePage.webm)
-![Profile Page](/public/videos/profilePage.webmg)
-![Comments Page](/public/videos/commentPage.webm)
-![Create Post](/public/videos/createPost.webm)
-![Edit Post](/public/videos/editPost.webm)
-![Delete Post](/public/videos/deletePost.webm)
-![Create Comment](/public/videos/createComment.webm)
-![Edit Comment](/public/videos/editComment.webm)
-![Delete Comment](/public/videos/deleteComment.webm)
+![Home Page](./videos/homePage.webm)
+![Profile Page](./videos/profilePage.webm)
+![Comments Page](./videos/commentPage.webm)
+![Create Post](./videos/createPost.webm)
+![Edit Post](./videos/editPost.webm)
+![Delete Post](./videos/deletePost.webm)
+![Create Comment](./videos/createComment.webm)
+![Edit Comment](./videos/editComment.webm)
+![Delete Comment](./videos/deleteComment.webm)
 
 # Built With
 
