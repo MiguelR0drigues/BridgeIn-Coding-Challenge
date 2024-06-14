@@ -4,9 +4,10 @@ This project was built for BridgeIn as a coding challenge following the intervie
 
 # Table of Contents
 
-1. [Problem](#problem)
-2. [Solution](#solution)
-   1. [HomePage](#homepage)
+1. [Install & Run](#install-and-run)
+2. [Problem](#problem)
+3. [Solution](#solution)
+   1. [HomePage](#home-page)
    2. [Profile Page](#profile-page)
    3. [Comments Page](#comments-page)
    4. [Create Post](#create-post)
@@ -15,12 +16,12 @@ This project was built for BridgeIn as a coding challenge following the intervie
    7. [Create Comment](#create-comment)
    8. [Edit Comment](#edit-comment)
    9. [Delete Comment](#delete-comment)
-3. [Built With](#built-with)
-4. [Structure](#structure)
-5. [Skipped due to time constraints](#skipped-due-to-time-constraints)
-6. [Improvements for the future](#improvements-for-the-future)
+4. [Built With](#built-with)
+5. [Structure](#structure)
+6. [Skipped due to time constraints](#skipped-due-to-time-constraints)
+7. [Improvements for the future](#improvements-for-the-future)
 
-# Install & Run
+# Install and Run
 
 In order to install and run this application, in your terminal navigate to a directory where you want to clone the application and then type the following commands:
 
@@ -49,7 +50,7 @@ npm run dev
 
 # Solution
 
-## HomePage
+## Home Page
 
 ![Home Page](./videos/homePage.gif)
 
