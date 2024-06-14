@@ -20,6 +20,17 @@ This project was built for BridgeIn as a coding challenge following the intervie
 5. [Skipped due to time constraints](#skipped-due-to-time-constraints)
 6. [Improvements for the future](#improvements-for-the-future)
 
+# Install & Run
+
+In order to install and run this application, in your terminal navigate to a directory where you want to clone the application and then type the following commands:
+
+```
+git clone https://github.com/MiguelR0drigues/BridgeIn-Coding-Challenge.git
+git cd .\coding-challenge\
+npm install
+npm run dev
+```
+
 # Problem
 
 1. Consider the following public API to get the data you will need to display:
