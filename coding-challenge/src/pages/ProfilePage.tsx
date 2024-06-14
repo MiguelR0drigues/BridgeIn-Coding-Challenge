@@ -81,7 +81,9 @@ const ProfilePage: React.FC = () => {
       <Header hasGoBack>
         <span className="flex flex-col gap-1 justify-start items-start">
           <h2 className="text-3xl font-bold text-white">{currentUser?.name}</h2>
-          <h4 className="text-sm text-neutral-400">@{currentUser?.username}</h4>
+          <h4 className="text-sm text-neutral-400">
+            {currentUser?.username ? `@${currentUser?.username}` : null}
+          </h4>
         </span>
       </Header>
       <ul className="flex flex-col items-center">
