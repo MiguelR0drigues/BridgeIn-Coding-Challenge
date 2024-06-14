@@ -1,10 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { myUserId } from "../../constants";
-import { removePost } from "../../store/postsSlice";
+import { editPost, removePost } from "../../store/postsSlice";
 import { RootState } from "../../store/store";
-import { CommentIcon, TrashIcon } from "../../theme/icons";
+import { CommentIcon, EditIcon, TrashIcon } from "../../theme/icons";
 import { Comment, Post } from "../../types";
+import { MatchEmailToUserId } from "../../utils/matchEmailToUserId";
+import PostDialog, { FormData } from "../post-dialog/PostDialog";
 
 const Card = ({ post, comment }: { post?: Post; comment?: Comment }) => {
   const { usersMap } = useSelector((state: RootState) => state.users);
@@ -23,11 +25,22 @@ const Card = ({ post, comment }: { post?: Post; comment?: Comment }) => {
       dispatch(removePost(id));
     };
 
+    const handleEdit = (formData: FormData) => {
+      const newPost = {
+        userId: post.userId,
+        id: post.id,
+        title: formData.title,
+        body: formData.body || "",
+      };
+      dispatch(editPost(newPost));
+    };
+
     return (
       <Link
         key={`comment${post.id}-${post.userId}`}
         to={`/${post.id}/comments`}
         className="post h-60 w-full flex flex-col justify-center items-center border-t-[1px] shadow-md p-12 cursor-pointer hover:bg-gray-700 hover:shadow-lg transition duration-300 ease-in-out"
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="w-full flex items-center justify-center first:justify-start ml-5">
           <span className="flex flex-row gap-2 items-center justify-center text-center">
@@ -62,18 +75,28 @@ const Card = ({ post, comment }: { post?: Post; comment?: Comment }) => {
             {post.body}
           </p>
           <p className="flex gap-4">
-            <span className="flex items-center justify-center gap-2 p-2 px-4 hover:bg-gray-500 duration-300 ease-in-out rounded-full mt-4">
+            <button className="flex items-center justify-center gap-2 p-2 px-4 hover:bg-gray-500 duration-300 ease-in-out rounded-full mt-4">
               <CommentIcon />
               Comments
-            </span>
+            </button>
             {post.userId === myUserId && (
-              <button
-                onClick={(e) => handleDelete(e, post.id)}
-                className="flex items-center justify-center gap-2 p-2 px-4 hover:bg-gray-500 duration-300 ease-in-out rounded-full mt-4 z-30"
-              >
-                <TrashIcon />
-                Delete
-              </button>
+              <>
+                <button
+                  onClick={(e) => handleDelete(e, post.id)}
+                  className="flex items-center justify-center gap-2 p-2 px-4 hover:bg-gray-500 duration-300 ease-in-out rounded-full mt-4 z-30"
+                >
+                  <TrashIcon />
+                  Delete
+                </button>
+                <PostDialog
+                  triggerClasses="flex items-center justify-center gap-2 p-2 px-4 hover:bg-gray-500 duration-300 ease-in-out rounded-full mt-4 z-30"
+                  triggerLabel="Edit"
+                  triggerIcon={<EditIcon />}
+                  title={`Edit Post ${post.id}`}
+                  post={post}
+                  onSubmit={handleEdit}
+                />
+              </>
             )}
           </p>
         </div>
@@ -90,7 +113,9 @@ const Card = ({ post, comment }: { post?: Post; comment?: Comment }) => {
       >
         <div className="w-full flex items-center justify-center first:justify-start ml-5">
           <span className="flex flex-row gap-2 items-center justify-center text-center">
-            <span className="text-lg font-bold">{comment.email}</span>
+            <span className="text-lg font-bold">
+              {MatchEmailToUserId(comment.email)}
+            </span>
           </span>
         </div>
         <div className="flex flex-col justify-center items-center w-full">
@@ -100,7 +125,7 @@ const Card = ({ post, comment }: { post?: Post; comment?: Comment }) => {
           <p className="mt-2 max-w-[600px] text-wrap text-justify first-letter:capitalize">
             {comment.body}
           </p>
-          {params.userId === `${myUserId}` && (
+          {params.userId === MatchEmailToUserId(comment.email) && (
             <button className="flex items-center justify-center gap-2 p-2 px-4 hover:bg-gray-500 duration-300 ease-in-out rounded-full mt-4">
               <TrashIcon />
               Delete

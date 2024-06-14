@@ -4,7 +4,9 @@ import { CloseIcon } from "../../theme/icons";
 import { Post } from "../../types";
 
 export interface Props {
-  triggerClasses: string;
+  post?: Post;
+  triggerClasses?: string;
+  triggerIcon?: JSX.Element;
   triggerLabel: string;
   title: string;
   onSubmit: (data: Post) => void;
@@ -12,17 +14,22 @@ export interface Props {
 
 export type FormData = {
   title: string;
-  body: string;
+  body?: string;
 };
 
 const PostDialog = ({
   title,
+  post,
   triggerClasses,
   triggerLabel,
   onSubmit,
+  triggerIcon,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [formData, setFormData] = useState<FormData>({ title: "", body: "" });
+  const [formData, setFormData] = useState<FormData>({
+    title: post?.title || "",
+    body: post?.body || "",
+  });
   const dialog = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -31,7 +38,9 @@ const PostDialog = ({
     }
   }, [isOpen]);
 
-  const openDialog = () => {
+  const openDialog = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.stopPropagation();
+    e.preventDefault();
     setIsOpen(true);
   };
 
@@ -62,22 +71,34 @@ const PostDialog = ({
       id: Date.now(),
       userId: myUserId,
       title: formData.title,
-      body: formData.body,
+      body: formData.body || "",
     });
     setFormData({ title: "", body: "" });
     closeDialog();
   };
+
   return (
     <>
       <button onClick={openDialog} className={triggerClasses}>
+        {triggerIcon}
         {triggerLabel}
       </button>
       {isOpen && (
         <dialog
           ref={dialog}
-          className="backdrop:bg-neutral-800 backdrop-blur-3xl backdrop:opacity-70 p-0 rounded-md shadow-lg max-w-md w-full mx-auto bg-gray-800"
+          className="backdrop:bg-neutral-800 backdrop-blur-3xl backdrop:opacity-70 p-0 rounded-md shadow-lg max-w-xl w-full mx-auto bg-gray-800 cursor-default"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
         >
-          <div className="relative p-5 rounded-t-md flex items-center justify-between">
+          <div
+            className="relative p-5 rounded-t-md flex items-center justify-between"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          >
             <h2 className="font-bold text-white text-xl">{title}</h2>
             <button
               onClick={closeDialog}
@@ -94,13 +115,16 @@ const PostDialog = ({
                 placeholder="Insert a title"
                 value={formData?.title}
                 onChange={handleInputChange}
-                required
                 aria-required
-                className="peer mt-1 p-2 block w-full rounded-md shadow-sm bg-gray-700 border-b-[1px] border-gray-600 focus:outline-none focus:border-blue-500 placeholder-transparent focus:placeholder-gray-500"
+                className="peer mt-1 p-2 block w-full rounded-md shadow-sm bg-gray-700 border-b-[1px] border-gray-600 focus:outline-none focus:border-blue-500 placeholder-transparent focus:placeholder-gray-500 text-white"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
               />
               <label
                 htmlFor="title"
-                className="absolute left-2 -top-3 text-gray-300 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:-top-4 peer-focus:text-sm peer-focus:text-blue-500"
+                className="absolute left-2 -top-4 text-gray-300 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:-top-4 peer-focus:text-sm peer-focus:text-blue-500"
               >
                 Title
               </label>
@@ -113,25 +137,38 @@ const PostDialog = ({
                 onChange={handleInputChange}
                 required
                 aria-required
-                className="peer mt-1 p-2 block w-full rounded-md bg-gray-700 border-b-[1px] border-gray-600 focus:outline-none focus:border-blue-500 placeholder-transparent focus:placeholder-gray-500"
+                rows={5}
+                className="peer mt-1 p-2 block w-full rounded-md bg-gray-700 border-b-[1px] border-gray-600 focus:outline-none focus:border-blue-500 placeholder-transparent focus:placeholder-gray-500 text-white"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
               />
               <label
                 htmlFor="body"
-                className="absolute left-2 -top-3 text-gray-300 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:-top-4 peer-focus:text-sm peer-focus:text-blue-500"
+                className="absolute left-2 -top-4 text-gray-300 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:-top-4 peer-focus:text-sm peer-focus:text-blue-500"
               >
                 Body
               </label>
             </section>
             <div className="flex justify-end space-x-2">
               <button
-                onClick={handleReset}
                 className="px-4 py-2 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition duration-300 ease-in-out"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  handleReset();
+                }}
               >
                 Clear
               </button>
               <button
                 className="px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition duration-300 ease-in-out"
-                onClick={handleSubmit}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  handleSubmit();
+                }}
               >
                 Submit
               </button>

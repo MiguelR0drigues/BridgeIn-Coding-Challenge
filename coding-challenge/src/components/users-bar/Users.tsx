@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { myUserId } from "../constants";
-import { AppDispatch, RootState } from "../store/store";
-import { loadUsers } from "../store/usersSlice";
-import { User } from "../types";
+import { myUserId } from "../../constants";
+import { AppDispatch, RootState } from "../../store/store";
+import { loadUsers } from "../../store/usersSlice";
+import { User } from "../../types";
 
 const OtherUsers: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();

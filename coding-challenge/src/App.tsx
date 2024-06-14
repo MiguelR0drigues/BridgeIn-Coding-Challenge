@@ -1,7 +1,7 @@
 import React from "react";
-import OtherUsers from "./components/Users";
 import Main from "./components/main/Main";
 import Navigation from "./components/navigation/Navigation";
+import OtherUsers from "./components/users-bar/Users";
 import "./index.css";
 
 const App: React.FC = () => {
