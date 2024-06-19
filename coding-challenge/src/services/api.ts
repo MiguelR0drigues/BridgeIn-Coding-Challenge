@@ -6,23 +6,14 @@ const API = axios.create({
 });
 
 export const fetchPosts = (page: number, limit: number, userId?: number) => {
-  return API.get(
-    "/posts",
-    userId
-      ? {
-          params: {
-            _page: page,
-            _limit: limit,
-            userId: userId,
-          },
-        }
-      : {
-          params: {
-            _page: page,
-            _limit: limit,
-          },
-        }
-  );
+  const params: { _page: number; _limit: number; userId?: number } = {
+    _page: page,
+    _limit: limit,
+  };
+  if (userId) {
+    params.userId = userId;
+  }
+  return API.get("/posts", { params });
 };
 
 export const fetchComments = (postId: number, page: number, limit: number) => {
